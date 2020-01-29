@@ -102,7 +102,6 @@ void UReallyCoolMovementComponent::UpdateFromCompressedFlags(uint8 Flags)
 FNetworkPredictionData_Client* UReallyCoolMovementComponent::GetPredictionData_Client() const
 {
 	check(PawnOwner);
-	//check(PawnOwner->GetLocalRole() < ROLE_Authority);
 
 	if (!ClientPredictionData)
 	{

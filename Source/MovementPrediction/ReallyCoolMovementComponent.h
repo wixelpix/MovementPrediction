@@ -70,18 +70,21 @@ public:
 	virtual void OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity) override;
 	// End UCharacterMovementComponent Interface
 
+	/** Tells the component to start a dash */
 	void StartDash(const FVector& DashDirection);
 
 protected:
 
+	// Speed of the dash
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashSpeed;
 
+	// Duration of the dash
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashDurationSeconds;
 
+	// Variables we need - movement prediction will touch these
 	uint8 bWantsToDash : 1;
 	float DashTimeRemaining;
 	FVector DashDir;
-
 };
