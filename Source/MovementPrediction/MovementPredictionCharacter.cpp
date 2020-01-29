@@ -110,14 +110,6 @@ void AMovementPredictionCharacter::SetupPlayerInputComponent(class UInputCompone
 	PlayerInputComponent->BindAction("Dash", IE_Released, this, &ThisClass::OnStopDash);
 }
 
-void AMovementPredictionCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AMovementPredictionCharacter, CurrentDashDir);
-	DOREPLIFETIME(AMovementPredictionCharacter, DashTimeLeft);
-}
-
 void AMovementPredictionCharacter::OnFire()
 {
 	// try and fire a projectile
@@ -194,7 +186,9 @@ void AMovementPredictionCharacter::Tick(float DeltaSeconds)
 	// Update dash
 	if (DashTimeLeft > 0.f)
 	{
-		LaunchCharacter(CurrentDashDir * DashSpeed, true, true);
+		AddActorWorldOffset(CurrentDashDir * DashSpeed * DeltaSeconds, true);
+
+		//LaunchCharacter(CurrentDashDir * DashSpeed, true, true);
 		DashTimeLeft -= DeltaSeconds;
 	}
 }

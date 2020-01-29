@@ -2,6 +2,7 @@
 
 
 #include "ReallyCoolMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "MovementPredictionCharacter.h"
 
 void FSavedMove_ReallyCoolMovez::Clear()
@@ -9,6 +10,7 @@ void FSavedMove_ReallyCoolMovez::Clear()
 	Super::Clear();
 
 	bSavedWantsToDash = false;
+	SavedDashTimeRemaining = 0.f;
 	SavedDashDir = FVector::ZeroVector;
 }
 
@@ -33,6 +35,11 @@ bool FSavedMove_ReallyCoolMovez::CanCombineWith(const FSavedMovePtr& NewMove, AC
 		return false;
 	}
 
+	if (SavedDashTimeRemaining != ((FSavedMove_ReallyCoolMovez*)&NewMove)->SavedDashTimeRemaining)
+	{
+		return false;
+	}
+
 	if (SavedDashDir != ((FSavedMove_ReallyCoolMovez*)&NewMove)->SavedDashDir)
 	{
 		return false;
@@ -52,6 +59,7 @@ void FSavedMove_ReallyCoolMovez::SetMoveFor(ACharacter* Character, float InDelta
 	{
 		// Save the state from the player's input, set on movement component
 		bSavedWantsToDash = Movement->bWantsToDash;
+		SavedDashTimeRemaining = Movement->DashTimeRemaining;
 		SavedDashDir = Movement->DashDir;
 	}
 }
@@ -67,6 +75,7 @@ void FSavedMove_ReallyCoolMovez::PrepMoveFor(ACharacter* Character)
 	UReallyCoolMovementComponent* Movement = Cast<UReallyCoolMovementComponent>(Character->GetCharacterMovement());
 	if (Movement)
 	{
+		Movement->DashTimeRemaining = SavedDashTimeRemaining;
 		Movement->DashDir = SavedDashDir;
 	}
 }
@@ -134,7 +143,9 @@ void UReallyCoolMovementComponent::OnMovementUpdated(float DeltaSeconds, const F
 	// Update dash
 	if (DashTimeRemaining > 0.f)
 	{
-		Launch(DashDir * DashSpeed);
+		GetCharacterOwner()->AddActorWorldOffset(DashDir * DashSpeed * DeltaSeconds, true);
+
+		//Launch(DashDir * DashSpeed);
 		DashTimeRemaining -= DeltaSeconds;
 	}
 }

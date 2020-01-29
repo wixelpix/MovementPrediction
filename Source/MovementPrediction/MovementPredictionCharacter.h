@@ -84,7 +84,6 @@ protected:
 	// APawn interface
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	// End of APawn interface
 
 public:
@@ -103,6 +102,7 @@ private:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_ToggleMovementPrediction();
 
+	UPROPERTY(EditDefaultsOnly)
 	bool bUseMovementPrediction;
 
 #pragma region Dash
@@ -135,10 +135,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashSpeed;
 
-	UPROPERTY(Transient, Replicated)
 	FVector CurrentDashDir;
-
-	UPROPERTY(Transient, Replicated)
 	float DashTimeLeft;
 
 #pragma endregion

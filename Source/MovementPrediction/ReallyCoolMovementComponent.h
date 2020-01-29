@@ -37,6 +37,9 @@ public:
 	// Dash input flag - used to re-trigger the ability if a correction forces us to resimulate
 	uint8 bSavedWantsToDash : 1;
 
+	// Dash time remaining
+	float SavedDashTimeRemaining;
+
 	// Desired dash direction
 	FVector SavedDashDir;
 };
